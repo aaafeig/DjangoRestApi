@@ -1,5 +1,7 @@
 from rest_framework import generics, permissions
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import AllowAny
+
 from .models import Payments
 from .serializers import PaymentsSerializer, UserSerializer
 
@@ -13,6 +15,10 @@ class PaymentsListAPIView(generics.ListAPIView):
 
 
 # контроллер пользователей
+
+class UserRegisterAPIView(generics.CreateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
 
 
 class UserCreateAPIView(generics.CreateAPIView):
