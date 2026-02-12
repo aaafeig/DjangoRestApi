@@ -2,6 +2,8 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Lesson, Course
 from rest_framework import generics, viewsets
+
+from .pagination import CoursePagination, LessonPagination
 from .serializers import LessonSerializer, CourseSerializer
 from .permission import IsOwnerOrModerator
 
@@ -11,11 +13,11 @@ from .permission import IsOwnerOrModerator
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
     permission_classes = [IsOwnerOrModerator]
+    pagination_class = CoursePagination
 
     def get_queryset(self):
         user = self.request.user
 
-        # Модератор видит всё
         if user.groups.filter(name="moderators").exists():
             return Course.objects.all()
 
@@ -38,6 +40,7 @@ class LessonCreateAPIView(generics.CreateAPIView):
 
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
+    pagination_class = LessonPagination
 
     def get_queryset(self):
         user = self.request.user
