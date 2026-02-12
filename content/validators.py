@@ -7,6 +7,11 @@ class LinkValidator:
     def __init__(self, field):
         self.field = field
 
-    def __caLL__(self, link):
-        if not re.match(r"^https?://youtu.be", link):
-            raise serializers.ValidationError("Ссылки могут быть только с youtube")
+    def __call__(self, attrs):
+        link = attrs.get(self.field)
+
+        if link and "youtube.com" not in link and "youtu.be" not in link:
+            raise serializers.ValidationError(
+                {self.field: "Разрешены только ссылки на YouTube"}
+            )
+

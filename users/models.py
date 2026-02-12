@@ -5,7 +5,7 @@ from content.models import Course, Lesson
 
 # Create your models here.
 class User(AbstractUser):
-    username = None
+    username = models.CharField(unique=True, verbose_name="имя пользователя", default="", max_length=20)
 
     email = models.EmailField(max_length=255, unique=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True)
