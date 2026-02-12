@@ -15,7 +15,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_count_lessons(obj):
-        return obj.lessons_set.count()
+        return obj.lessons.count()
 
     class Meta:
         model = Course
