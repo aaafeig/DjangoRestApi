@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'content',
-    'django_filters'
+    'django_filters',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -130,3 +131,16 @@ STATIC_URL = 'static/'
 MEDIA_URL = "/media/"
 
 AUTH_USER_MODEL = 'users.User'
+
+REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+
+}
+
+
+STRIPE_API_KEY = os.getenv('API_SECRET_KEY')

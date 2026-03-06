@@ -1,30 +1,69 @@
+from rest_framework.permissions import IsAuthenticated
+
 from .models import Lesson, Course
 from rest_framework import generics, viewsets
+
+from .pagination import CoursePagination, LessonPagination
 from .serializers import LessonSerializer, CourseSerializer
+from .permission import IsOwnerOrModerator
 
+# Контроллеры для курсов(viewsets)
 
-#Контроллеры для курсов(viewsets)
 
 class CourseViewSet(viewsets.ModelViewSet):
     serializer_class = CourseSerializer
-    queryset = Course.objects.all()
+    permission_classes = [IsOwnerOrModerator]
+    pagination_class = CoursePagination
 
-#Контроллеры для уроков(generics)
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.groups.filter(name="moderators").exists():
+            return Course.objects.all()
+
+        return Course.objects.filter(owner=user)
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+# Контроллеры для уроков(generics)
+
 
 class LessonCreateAPIView(generics.CreateAPIView):
     serializer_class = LessonSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
 
 class LessonListAPIView(generics.ListAPIView):
     serializer_class = LessonSerializer
-    queryset = Lesson.objects.all()
+    pagination_class = LessonPagination
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.groups.filter(name="moderators").exists():
+            return Lesson.objects.all()
+
+        return Lesson.objects.filter(owner=user)
+
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    permission_classes = [IsOwnerOrModerator]
+
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
+    permission_classes = [IsOwnerOrModerator]
+
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
     serializer_class = LessonSerializer
+    queryset = Lesson.objects.all()
+    permission_classes = [IsOwnerOrModerator]
