@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'content',
-    'django_filters'
+    'django_filters',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,6 @@ REST_FRAMEWORK = {
     )
 
 }
+
+
+STRIPE_API_KEY = os.getenv('API_SECRET_KEY')

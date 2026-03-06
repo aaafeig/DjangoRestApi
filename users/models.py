@@ -26,19 +26,22 @@ class Payments(models.Model):
     PAYMENTS_METHOD_CHOICES = ((CASH, "наличные"), (TRANSFER, "перевод"))
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="payments")
-    date = models.DateField(auto_now_add=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True, blank=True)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=True, blank=True)
     amount = models.PositiveIntegerField()
-    paid_method = models.CharField(max_length=10, choices=PAYMENTS_METHOD_CHOICES)
+    payment_method = models.CharField(max_length=10, choices=PAYMENTS_METHOD_CHOICES)
+    stripe_session_id = models.CharField(max_length=255, null=True, blank=True)
+    payment_url = models.URLField(null=True, blank=True)
+
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user} - {self.date} - {self.amount} - {self.paid_method}"
+        return f"{self.user} - {self.created_at} - {self.amount} - {self.payment_method}"
 
     class Meta:
         verbose_name = "payment"
         verbose_name_plural = "payments"
-        ordering = ("-date",)
+        ordering = ("-created_at",)
 
 class Subscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

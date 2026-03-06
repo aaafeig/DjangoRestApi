@@ -2,10 +2,12 @@ from rest_framework import serializers
 from .models import Payments, User, Subscription
 
 
-class PaymentsSerializer(serializers.ModelSerializer):
+class PaymentSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Payments
         fields = "__all__"
+        read_only_fields = ("user", "payment_url")
 
 
 class UserSerializer(serializers.ModelSerializer):
