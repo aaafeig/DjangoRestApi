@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions, status
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
+from rest_framework.generics import UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,6 +10,7 @@ from content.models import Course
 from content.services import create_stripe_product, create_stripe_price, create_stripe_session
 from .models import Payments, Subscription
 from .serializers import UserSerializer, PaymentSerializer
+from .tasks import send_update_email
 
 
 # контроллер платежей
@@ -91,3 +93,13 @@ class PaymentAPIView(APIView):
         serializer = PaymentSerializer(payment)
 
         return Response(serializer.data)
+
+class CourseUpdateAPIView(UpdateAPIView):
+
+    def perform_update(self, serializer):
+        course = serializer.save()
+
+        subscriptions = Subscription.objects.filter(course=course)
+
+        for sub in subscriptions:
+            send_update_email.delay(sub.user.email, course.title)
