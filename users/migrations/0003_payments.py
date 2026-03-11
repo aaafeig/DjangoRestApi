@@ -8,26 +8,63 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('content', '0001_initial'),
-        ('users', '0002_remove_user_username_user_city_user_image_user_and_more'),
+        ("content", "0001_initial"),
+        ("users", "0002_remove_user_username_user_city_user_image_user_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Payments',
+            name="Payments",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(auto_now_add=True)),
-                ('amount', models.PositiveIntegerField()),
-                ('paid_method', models.CharField(choices=[('cash', 'наличные'), ('transfer', 'перевод')], max_length=10)),
-                ('course', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='content.course')),
-                ('lesson', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='content.lesson')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='payments', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date", models.DateField(auto_now_add=True)),
+                ("amount", models.PositiveIntegerField()),
+                (
+                    "paid_method",
+                    models.CharField(
+                        choices=[("cash", "наличные"), ("transfer", "перевод")],
+                        max_length=10,
+                    ),
+                ),
+                (
+                    "course",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="content.course",
+                    ),
+                ),
+                (
+                    "lesson",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="content.lesson",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="payments",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'payment',
-                'verbose_name_plural': 'payments',
-                'ordering': ('-date',),
+                "verbose_name": "payment",
+                "verbose_name_plural": "payments",
+                "ordering": ("-date",),
             },
         ),
     ]
